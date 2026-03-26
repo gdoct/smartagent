@@ -4,7 +4,6 @@
 import argparse
 import json
 import readline  # noqa: F401 — enables arrow keys/history in input()
-import sys
 
 from rich.console import Console
 from rich.live import Live

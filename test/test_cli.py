@@ -1,9 +1,6 @@
 """Tests for cli module."""
 
-import json
-from unittest.mock import patch, MagicMock, call
-
-import pytest
+from unittest.mock import patch, MagicMock
 
 from react_agent.cli import (
     print_tool_call,

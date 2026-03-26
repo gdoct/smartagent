@@ -4,8 +4,6 @@ import subprocess
 from datetime import date, datetime
 from unittest.mock import patch, MagicMock
 
-import pytest
-
 from react_agent.tools import (
     shell,
     read_file,
