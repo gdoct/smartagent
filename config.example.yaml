@@ -1,0 +1,18 @@
+# Copy this file to config.yaml and fill in your values.
+
+llm:
+  # Model name. Leave empty to use the server's default/loaded model.
+  model: ""
+
+  # OpenAI-compatible API endpoint.
+  # Examples:
+  #   LM Studio:     http://localhost:1234/v1
+  #   GitHub Models:  https://models.inference.ai.azure.com
+  #   OpenAI:         https://api.openai.com/v1
+  #   Ollama:         http://localhost:11434/v1
+  base_url: "http://localhost:1234/v1"
+
+  # API key. Use "lm-studio" for LM Studio, or your real key for cloud providers.
+  api_key: "lm-studio"
+
+  temperature: 0.0

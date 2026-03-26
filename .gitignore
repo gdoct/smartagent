@@ -1,0 +1,8 @@
+config.yaml
+.venv/
+__pycache__/
+*.pyc
+.coverage
+.env
+*.local.json
+.pytest_cache/

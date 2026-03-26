@@ -1,0 +1,9 @@
+[run]
+source = src/react_agent
+omit =
+    .venv/*
+    tests/*
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.
