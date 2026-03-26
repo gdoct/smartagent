@@ -3,7 +3,7 @@
 [![Tests](https://github.com/gdoct/smartagent/actions/workflows/tests.yml/badge.svg)](https://github.com/gdoct/smartagent/actions/workflows/tests.yml)
 [![Lint](https://github.com/gdoct/smartagent/actions/workflows/lint.yml/badge.svg)](https://github.com/gdoct/smartagent/actions/workflows/lint.yml)
 [![CodeQL](https://github.com/gdoct/smartagent/actions/workflows/codeql.yml/badge.svg)](https://github.com/gdoct/smartagent/actions/workflows/codeql.yml)
-[![codecov](https://codecov.io/gh/gdoct/smartagent/graph/badge.svg)](https://codecov.io/gh/gdoct/smartagent)
+[![codecov](https://codecov.io/github/gdoct/smartagent/branch/main/graph/badge.svg?token=GIygrwT6jP)](https://codecov.io/github/gdoct/smartagent)
 
 A ReAct (Reasoning + Acting) agent powered by LangGraph. It connects to any OpenAI-compatible API and comes with built-in tools for shell execution, file I/O, web search, and more.
 
