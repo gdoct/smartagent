@@ -5,7 +5,13 @@ from unittest.mock import patch, MagicMock, call
 
 import pytest
 
-from react_agent.cli import print_tool_call, print_tool_result, stream_response, parse_args, main
+from react_agent.cli import (
+    print_tool_call,
+    print_tool_result,
+    stream_response,
+    parse_args,
+    main,
+)
 
 
 class TestPrintToolCall:
@@ -71,7 +77,9 @@ class TestStreamResponse:
     @patch("react_agent.cli.Live")
     @patch("react_agent.cli.print_tool_result")
     @patch("react_agent.cli.print_tool_call")
-    def test_tool_call_and_result(self, mock_ptc, mock_ptr, mock_live_cls, mock_console):
+    def test_tool_call_and_result(
+        self, mock_ptc, mock_ptr, mock_live_cls, mock_console
+    ):
         mock_live = MagicMock()
         mock_live_cls.return_value = mock_live
 
@@ -79,7 +87,9 @@ class TestStreamResponse:
 
         # AI chunk with tool call
         tc_chunk = {"id": "tc1", "name": "shell", "args": '{"command": "ls"}'}
-        ai_msg = self._make_ai_chunk(content="Let me check", tool_call_chunks=[tc_chunk])
+        ai_msg = self._make_ai_chunk(
+            content="Let me check", tool_call_chunks=[tc_chunk]
+        )
         tool_msg = self._make_tool_msg(name="shell", content="file1.txt")
 
         agent.stream.return_value = [(ai_msg, {}), (tool_msg, {})]
@@ -92,7 +102,9 @@ class TestStreamResponse:
     @patch("react_agent.cli.Live")
     @patch("react_agent.cli.print_tool_result")
     @patch("react_agent.cli.print_tool_call")
-    def test_tool_call_invalid_json(self, mock_ptc, mock_ptr, mock_live_cls, mock_console):
+    def test_tool_call_invalid_json(
+        self, mock_ptc, mock_ptr, mock_live_cls, mock_console
+    ):
         mock_live = MagicMock()
         mock_live_cls.return_value = mock_live
 
@@ -121,19 +133,21 @@ class TestStreamResponse:
     @patch("react_agent.cli.Live")
     @patch("react_agent.cli.print_tool_result")
     @patch("react_agent.cli.print_tool_call")
-    def test_tool_call_chunk_accumulation(self, mock_ptc, mock_ptr, mock_live_cls, mock_console):
+    def test_tool_call_chunk_accumulation(
+        self, mock_ptc, mock_ptr, mock_live_cls, mock_console
+    ):
         """Test accumulating args across multiple chunks for the same tool call."""
         mock_live = MagicMock()
         mock_live_cls.return_value = mock_live
 
         agent = MagicMock()
 
-        chunk1 = self._make_ai_chunk(tool_call_chunks=[
-            {"id": "tc1", "name": "shell", "args": '{"comma'}
-        ])
-        chunk2 = self._make_ai_chunk(tool_call_chunks=[
-            {"id": "tc1", "name": "shell", "args": 'nd": "ls"}'}
-        ])
+        chunk1 = self._make_ai_chunk(
+            tool_call_chunks=[{"id": "tc1", "name": "shell", "args": '{"comma'}]
+        )
+        chunk2 = self._make_ai_chunk(
+            tool_call_chunks=[{"id": "tc1", "name": "shell", "args": 'nd": "ls"}'}]
+        )
         tool_msg = self._make_tool_msg(name="shell", content="output")
 
         agent.stream.return_value = [(chunk1, {}), (chunk2, {}), (tool_msg, {})]
@@ -152,8 +166,22 @@ class TestParseArgs:
         assert args.temperature is None
         assert args.config is None
 
-    @patch("sys.argv", ["cli.py", "--model", "gpt-4", "--base-url", "http://x",
-                         "--api-key", "k", "--temperature", "0.5", "--config", "c.yaml"])
+    @patch(
+        "sys.argv",
+        [
+            "cli.py",
+            "--model",
+            "gpt-4",
+            "--base-url",
+            "http://x",
+            "--api-key",
+            "k",
+            "--temperature",
+            "0.5",
+            "--config",
+            "c.yaml",
+        ],
+    )
     def test_all_args(self):
         args = parse_args()
         assert args.model == "gpt-4"
@@ -169,7 +197,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_quit_command(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_quit_command(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -183,7 +213,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_exit_command(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_exit_command(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -195,7 +227,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_empty_input_skipped(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_empty_input_skipped(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -210,7 +244,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_eof_exits(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_eof_exits(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -222,7 +258,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_keyboard_interrupt_exits(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_keyboard_interrupt_exits(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -234,7 +272,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_keyboard_interrupt_during_stream(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_keyboard_interrupt_during_stream(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -247,7 +287,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py", "--config", "/dev/null"])
-    def test_stream_error_handled(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_stream_error_handled(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -259,9 +301,25 @@ class TestMain:
     @patch("react_agent.cli.create_agent")
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
-    @patch("sys.argv", ["cli.py", "--model", "m", "--base-url", "http://u",
-                         "--api-key", "k", "--temperature", "0.9", "--config", "/dev/null"])
-    def test_cli_args_override_config(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    @patch(
+        "sys.argv",
+        [
+            "cli.py",
+            "--model",
+            "m",
+            "--base-url",
+            "http://u",
+            "--api-key",
+            "k",
+            "--temperature",
+            "0.9",
+            "--config",
+            "/dev/null",
+        ],
+    )
+    def test_cli_args_override_config(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -278,7 +336,9 @@ class TestMain:
     @patch("react_agent.cli.console")
     @patch("react_agent.cli.LLMConfig")
     @patch("sys.argv", ["cli.py"])
-    def test_default_config_path(self, mock_config_cls, mock_console, mock_create_agent, mock_stream):
+    def test_default_config_path(
+        self, mock_config_cls, mock_console, mock_create_agent, mock_stream
+    ):
         mock_cfg = MagicMock()
         mock_config_cls.from_yaml.return_value = mock_cfg
 
@@ -294,4 +354,5 @@ class TestMainModule:
     def test_dunder_main(self, mock_main):
         """Verify __main__.py calls main()."""
         import react_agent.__main__  # noqa: F401
+
         mock_main.assert_called()

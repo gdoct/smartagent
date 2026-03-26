@@ -61,7 +61,9 @@ def stream_response(agent, user_input: str):
                     live.start()
                 current_text += msg.content
                 live.update(
-                    Panel(Markdown(current_text), title="Assistant", border_style="cyan")
+                    Panel(
+                        Markdown(current_text), title="Assistant", border_style="cyan"
+                    )
                 )
 
             # Accumulate tool call chunks
@@ -108,7 +110,9 @@ def parse_args():
         "--temperature", type=float, default=None, help="Override sampling temperature"
     )
     parser.add_argument(
-        "--config", default=None, help="Path to config.yaml (default: config.yaml in project root)"
+        "--config",
+        default=None,
+        help="Path to config.yaml (default: config.yaml in project root)",
     )
     return parser.parse_args()
 
@@ -116,6 +120,7 @@ def parse_args():
 def main():
     args = parse_args()
     from pathlib import Path
+
     config_path = Path(args.config) if args.config else None
     config = LLMConfig.from_yaml(config_path) if config_path else LLMConfig.from_yaml()
 

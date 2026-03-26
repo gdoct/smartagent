@@ -34,7 +34,10 @@ class TestShell:
         result = shell.invoke({"command": "true"})
         assert result == "(no output)"
 
-    @patch("react_agent.tools.subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="x", timeout=30))
+    @patch(
+        "react_agent.tools.subprocess.run",
+        side_effect=subprocess.TimeoutExpired(cmd="x", timeout=30),
+    )
     def test_timeout(self, mock_run):
         result = shell.invoke({"command": "sleep 999"})
         assert "timed out" in result
@@ -137,7 +140,10 @@ class TestPython:
         script_file = tmp_path / "timeout_test.py"
         script_file.write_text("x = 1")
 
-        with patch("react_agent.tools.subprocess.run", side_effect=subprocess.TimeoutExpired(cmd="x", timeout=60)):
+        with patch(
+            "react_agent.tools.subprocess.run",
+            side_effect=subprocess.TimeoutExpired(cmd="x", timeout=60),
+        ):
             with patch("tempfile.NamedTemporaryFile") as mock_tmp:
                 mock_ctx = MagicMock()
                 mock_ctx.name = str(script_file)
@@ -171,6 +177,7 @@ class TestWebFetch:
     @patch("requests.get")
     def test_request_error(self, mock_get):
         import requests
+
         mock_get.side_effect = requests.RequestException("connection failed")
         result = web_fetch.invoke({"url": "http://example.com"})
         assert "Error:" in result
@@ -223,6 +230,7 @@ class TestWebText:
     @patch("requests.get")
     def test_request_error(self, mock_get):
         import requests
+
         mock_get.side_effect = requests.RequestException("timeout")
         result = web_text.invoke({"url": "http://example.com"})
         assert "Error:" in result
@@ -285,6 +293,14 @@ class TestAllTools:
         assert len(ALL_TOOLS) == 10
         names = {t.name for t in ALL_TOOLS}
         assert names == {
-            "shell", "read_file", "write_file", "calculator", "python",
-            "duckduckgo_search", "web_fetch", "web_text", "current_date", "current_time",
+            "shell",
+            "read_file",
+            "write_file",
+            "calculator",
+            "python",
+            "duckduckgo_search",
+            "web_fetch",
+            "web_text",
+            "current_date",
+            "current_time",
         }

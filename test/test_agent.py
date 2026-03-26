@@ -26,7 +26,9 @@ class TestCreateAgent:
 
         mock_config_cls.assert_called_once()
         mock_cfg.create_llm.assert_called_once()
-        mock_create.assert_called_once_with(mock_llm, ALL_TOOLS, system_prompt=SYSTEM_PROMPT)
+        mock_create.assert_called_once_with(
+            mock_llm, ALL_TOOLS, system_prompt=SYSTEM_PROMPT
+        )
 
     @patch("react_agent.agent.create_langchain_agent")
     def test_custom_config(self, mock_create):
@@ -37,4 +39,6 @@ class TestCreateAgent:
         create_agent(cfg)
 
         cfg.create_llm.assert_called_once()
-        mock_create.assert_called_once_with(mock_llm, ALL_TOOLS, system_prompt=SYSTEM_PROMPT)
+        mock_create.assert_called_once_with(
+            mock_llm, ALL_TOOLS, system_prompt=SYSTEM_PROMPT
+        )

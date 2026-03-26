@@ -99,9 +99,7 @@ def python(script: str) -> str:
     import tempfile
     import os
 
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".py", delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(script)
         script_path = f.name
 
@@ -134,9 +132,11 @@ def web_fetch(url: str) -> str:
     import requests
 
     try:
-        resp = requests.get(url, timeout=30, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; ReactAgent/1.0)"
-        })
+        resp = requests.get(
+            url,
+            timeout=30,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; ReactAgent/1.0)"},
+        )
         resp.raise_for_status()
         return resp.text[:100_000]  # cap at 100k chars
     except requests.RequestException as e:
@@ -154,9 +154,11 @@ def web_text(url: str) -> str:
     from bs4 import BeautifulSoup
 
     try:
-        resp = requests.get(url, timeout=30, headers={
-            "User-Agent": "Mozilla/5.0 (compatible; ReactAgent/1.0)"
-        })
+        resp = requests.get(
+            url,
+            timeout=30,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; ReactAgent/1.0)"},
+        )
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
 
@@ -195,6 +197,7 @@ def duckduckgo_search(query: str) -> str:
 def current_date() -> str:
     """Return the current date in YYYY-MM-DD format."""
     from datetime import date
+
     return date.today().isoformat()
 
 
@@ -202,6 +205,19 @@ def current_date() -> str:
 def current_time() -> str:
     """Return the current local time in HH:MM:SS format."""
     from datetime import datetime
+
     return datetime.now().strftime("%H:%M:%S")
 
-ALL_TOOLS = [shell, read_file, write_file, calculator, python, duckduckgo_search, web_fetch, web_text, current_date, current_time]
+
+ALL_TOOLS = [
+    shell,
+    read_file,
+    write_file,
+    calculator,
+    python,
+    duckduckgo_search,
+    web_fetch,
+    web_text,
+    current_date,
+    current_time,
+]

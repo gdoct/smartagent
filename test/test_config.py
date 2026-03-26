@@ -17,7 +17,9 @@ class TestLLMConfigDefaults:
         assert cfg.api_key == "lm-studio"
 
     def test_custom_values(self):
-        cfg = LLMConfig(model="gpt-4", base_url="http://x", temperature=0.5, api_key="k")
+        cfg = LLMConfig(
+            model="gpt-4", base_url="http://x", temperature=0.5, api_key="k"
+        )
         assert cfg.model == "gpt-4"
         assert cfg.base_url == "http://x"
         assert cfg.temperature == 0.5
@@ -92,4 +94,6 @@ class TestCreateLlm:
 class TestConfigPath:
     def test_config_path_is_next_to_config_module(self):
         assert CONFIG_PATH.name == "config.yaml"
-        assert CONFIG_PATH.parent == Path(__file__).parent.parent / "src" / "react_agent"
+        assert (
+            CONFIG_PATH.parent == Path(__file__).parent.parent / "src" / "react_agent"
+        )

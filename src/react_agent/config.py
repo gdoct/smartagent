@@ -17,7 +17,7 @@ class LLMConfig:
     base_url: str = "http://localhost:1234/v1"
     temperature: float = 0.0
     api_key: str = "lm-studio"
-    
+
     def get_api_key(self) -> str:
         return self.api_key
 
