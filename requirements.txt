@@ -5,4 +5,4 @@ pyyaml
 rich
 requests
 beautifulsoup4
-duckduckgo-search
+ddgs

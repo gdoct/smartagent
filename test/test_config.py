@@ -1,7 +1,7 @@
 """Tests for config module."""
 
 from pathlib import Path
-from unittest.mock import patch 
+from unittest.mock import patch
 
 import pytest
 
