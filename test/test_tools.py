@@ -235,41 +235,50 @@ class TestWebText:
 
 
 class TestDuckDuckGoSearch:
-    @patch("ddgs.DDGS")
-    def test_successful_search(self, mock_ddgs_cls):
+    def _patch_ddgs(self):
+        """Create a mock ddgs module and patch it into sys.modules."""
+        mock_module = MagicMock()
+        return patch.dict("sys.modules", {"ddgs": mock_module}), mock_module
+
+    def test_successful_search(self):
+        patcher, mock_module = self._patch_ddgs()
         mock_ddgs = MagicMock()
         mock_ddgs.text.return_value = [
             {"title": "Result 1", "href": "http://r1.com", "body": "Body 1"},
             {"title": "Result 2", "href": "http://r2.com", "body": "Body 2"},
         ]
-        mock_ddgs_cls.return_value = mock_ddgs
-        result = duckduckgo_search.invoke({"query": "test"})
+        mock_module.DDGS.return_value = mock_ddgs
+        with patcher:
+            result = duckduckgo_search.invoke({"query": "test"})
         assert "Result 1" in result
         assert "http://r1.com" in result
         assert "Result 2" in result
 
-    @patch("ddgs.DDGS")
-    def test_no_results(self, mock_ddgs_cls):
+    def test_no_results(self):
+        patcher, mock_module = self._patch_ddgs()
         mock_ddgs = MagicMock()
         mock_ddgs.text.return_value = []
-        mock_ddgs_cls.return_value = mock_ddgs
-        result = duckduckgo_search.invoke({"query": "test"})
+        mock_module.DDGS.return_value = mock_ddgs
+        with patcher:
+            result = duckduckgo_search.invoke({"query": "test"})
         assert result == "No results found."
 
-    @patch("ddgs.DDGS")
-    def test_result_without_body(self, mock_ddgs_cls):
+    def test_result_without_body(self):
+        patcher, mock_module = self._patch_ddgs()
         mock_ddgs = MagicMock()
         mock_ddgs.text.return_value = [
             {"title": "T", "href": "http://x.com"},
         ]
-        mock_ddgs_cls.return_value = mock_ddgs
-        result = duckduckgo_search.invoke({"query": "test"})
+        mock_module.DDGS.return_value = mock_ddgs
+        with patcher:
+            result = duckduckgo_search.invoke({"query": "test"})
         assert "T" in result
 
-    @patch("ddgs.DDGS")
-    def test_exception(self, mock_ddgs_cls):
-        mock_ddgs_cls.side_effect = Exception("API error")
-        result = duckduckgo_search.invoke({"query": "test"})
+    def test_exception(self):
+        patcher, mock_module = self._patch_ddgs()
+        mock_module.DDGS.side_effect = Exception("API error")
+        with patcher:
+            result = duckduckgo_search.invoke({"query": "test"})
         assert "Error:" in result
 
 

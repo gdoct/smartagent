@@ -15,7 +15,7 @@ dependencies = [
     "rich",
     "requests",
     "beautifulsoup4",
-    "duckduckgo-search",
+    "ddgs",
 ]
 
 [project.optional-dependencies]
