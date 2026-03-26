@@ -33,7 +33,7 @@ class TestShell:
         assert result == "(no output)"
 
     @patch(
-        "react_agent.tools.subprocess.run",
+        "react_agent.tools.shell.subprocess.run",
         side_effect=subprocess.TimeoutExpired(cmd="x", timeout=30),
     )
     def test_timeout(self, mock_run):
@@ -139,7 +139,7 @@ class TestPython:
         script_file.write_text("x = 1")
 
         with patch(
-            "react_agent.tools.subprocess.run",
+            "react_agent.tools.python.subprocess.run",
             side_effect=subprocess.TimeoutExpired(cmd="x", timeout=60),
         ):
             with patch("tempfile.NamedTemporaryFile") as mock_tmp:
