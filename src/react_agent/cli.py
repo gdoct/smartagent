@@ -56,12 +56,12 @@ def stream_response(agent, user_input: str):
         if msg.type == "AIMessageChunk":
             if msg.content:
                 if live is None:
-                    live = Live(console=console, refresh_per_second=15)
+                    live = Live(console=console, refresh_per_second=15, transient=True)
                     live.start()
                 current_text += msg.content
                 live.update(
                     Panel(
-                        Markdown(current_text), title="Assistant", border_style="cyan"
+                        Markdown(current_text), title="Thinking...", border_style="dim"
                     )
                 )
 
@@ -77,10 +77,20 @@ def stream_response(agent, user_input: str):
                     current_tool_calls[tc_id]["args_str"] += tc_chunk["args"]
 
         elif msg.type == "tool":
-            # Before printing tool result, flush any pending text/tool calls
+            # Stop the live display (transient=True clears it)
             if live is not None:
                 live.stop()
                 live = None
+
+            # Re-print reasoning text as a static panel before the tool call
+            if current_text.strip():
+                console.print(
+                    Panel(
+                        Markdown(current_text),
+                        title="Reasoning",
+                        border_style="dim",
+                    )
+                )
                 current_text = ""
 
             # Print accumulated tool calls
@@ -94,10 +104,14 @@ def stream_response(agent, user_input: str):
 
             print_tool_result(msg.name, msg.content)
 
-    # Flush any remaining streamed text
+    # Flush any remaining streamed text as the final answer
     if live is not None:
         live.stop()
-        current_text = ""
+        live = None
+    if current_text.strip():
+        console.print(
+            Panel(Markdown(current_text), title="Assistant", border_style="cyan")
+        )
 
 
 def parse_args():
@@ -144,7 +158,8 @@ def main():
 
     while True:
         try:
-            user_input = input("> ").strip()
+            cwd = Path.cwd().name
+            user_input = input(f"{cwd}> ").strip()
         except (EOFError, KeyboardInterrupt):
             console.print("\nGoodbye!")
             break
