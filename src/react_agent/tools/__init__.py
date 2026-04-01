@@ -1,5 +1,6 @@
 """Tools for the react agent."""
 
+from react_agent.tools.browse import browse
 from react_agent.tools.calculator import calculator
 from react_agent.tools.current_date import current_date
 from react_agent.tools.current_time import current_time
@@ -15,6 +16,7 @@ ALL_TOOLS = [
     shell,
     read_file,
     write_file,
+    browse,
     calculator,
     python,
     duckduckgo_search,
@@ -26,6 +28,7 @@ ALL_TOOLS = [
 
 __all__ = [
     "ALL_TOOLS",
+    "browse",
     "calculator",
     "current_date",
     "current_time",

@@ -45,4 +45,10 @@ class LLMConfig:
             base_url=self.base_url,
             api_key=self.get_api_key,
             temperature=self.temperature,
+            model_kwargs={
+                "extra_body": {
+                    "enable_thinking": True,
+                    "truncate_thinking_history": False,
+                }
+            },
         )

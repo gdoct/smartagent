@@ -42,9 +42,27 @@ def print_tool_result(name: str, content: str):
 
 def stream_response(agent, user_input: str):
     """Stream agent response, printing tokens as they arrive."""
+    current_reasoning = ""
     current_text = ""
     current_tool_calls = {}  # id -> {name, args_str}
     live = None
+    live_mode = None  # "reasoning" or "answer"
+
+    def _stop_live():
+        nonlocal live, live_mode
+        if live is not None:
+            live.stop()
+            live = None
+            live_mode = None
+
+    def _ensure_live(mode: str) -> Live:
+        nonlocal live, live_mode
+        if live is None or live_mode != mode:
+            _stop_live()
+            live = Live(console=console, refresh_per_second=15, transient=True)
+            live.start()
+            live_mode = mode
+        return live
 
     for event in agent.stream(
         {"messages": [("user", user_input)]},
@@ -54,12 +72,19 @@ def stream_response(agent, user_input: str):
 
         # AIMessageChunk with content — stream text token by token
         if msg.type == "AIMessageChunk":
+            reasoning = msg.additional_kwargs.get("reasoning_content", "")
+            if reasoning:
+                current_reasoning += reasoning
+                _ensure_live("reasoning").update(
+                    Panel(
+                        Markdown(current_reasoning),
+                        title="Reasoning...",
+                        border_style="magenta",
+                    )
+                )
             if msg.content:
-                if live is None:
-                    live = Live(console=console, refresh_per_second=15, transient=True)
-                    live.start()
                 current_text += msg.content
-                live.update(
+                _ensure_live("answer").update(
                     Panel(
                         Markdown(current_text), title="Thinking...", border_style="dim"
                     )
@@ -78,11 +103,18 @@ def stream_response(agent, user_input: str):
 
         elif msg.type == "tool":
             # Stop the live display (transient=True clears it)
-            if live is not None:
-                live.stop()
-                live = None
+            _stop_live()
 
-            # Re-print reasoning text as a static panel before the tool call
+            # Re-print reasoning and answer as static panels before the tool call
+            if current_reasoning.strip():
+                console.print(
+                    Panel(
+                        Markdown(current_reasoning),
+                        title="Reasoning",
+                        border_style="magenta",
+                    )
+                )
+                current_reasoning = ""
             if current_text.strip():
                 console.print(
                     Panel(
@@ -104,10 +136,16 @@ def stream_response(agent, user_input: str):
 
             print_tool_result(msg.name, msg.content)
 
-    # Flush any remaining streamed text as the final answer
-    if live is not None:
-        live.stop()
-        live = None
+    # Flush any remaining streamed content as the final answer
+    _stop_live()
+    if current_reasoning.strip():
+        console.print(
+            Panel(
+                Markdown(current_reasoning),
+                title="Reasoning",
+                border_style="magenta",
+            )
+        )
     if current_text.strip():
         console.print(
             Panel(Markdown(current_text), title="Assistant", border_style="cyan")

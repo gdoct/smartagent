@@ -16,6 +16,9 @@ dependencies = [
     "requests",
     "beautifulsoup4",
     "ddgs",
+    "fastapi>=0.135.2",
+    "uvicorn>=0.42.0",
+    "playwright",
 ]
 
 [project.optional-dependencies]
@@ -26,6 +29,7 @@ dev = [
 
 [project.scripts]
 react-agent = "react_agent.cli:main"
+react-agent-web = "react_agent.web:run"
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
